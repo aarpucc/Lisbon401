@@ -1,0 +1,79 @@
+from cryptography.fernet import Fernet
+import os
+import urllib.request # used for downloading and saving background image
+import ctypes # so we can interact with windows dlls and change windows background etc
+
+
+def generate_key():
+    key = Fernet.generate_key()
+    with open("key.key", "wb") as key_file:
+        key_file.write(key)
+
+def load_key():
+    return open("key.key", "rb").read()
+
+def encrypt_file(file_path):
+    key = load_key()
+    fernet = Fernet(key)
+
+    with open(file_path, "rb") as file:
+        file_data = file.read()
+
+    encrypted_data = fernet.encrypt(file_data)
+    encrypted_file_path = file_path + ".encrypted"
+    
+    with open(encrypted_file_path, "wb") as file:
+        file.write(encrypted_data)
+
+    print(f"File encrypted successfully as {encrypted_file_path}.")
+
+def decrypt_file(encrypted_file_path):
+    key = load_key()
+    fernet = Fernet(key)
+
+    with open(encrypted_file_path, "rb") as file:
+        encrypted_data = file.read()
+
+    decrypted_data = fernet.decrypt(encrypted_data)
+    decrypted_file_path = encrypted_file_path.replace(".encrypted", ".decrypted")
+    
+    with open(decrypted_file_path, "wb") as file:
+        file.write(decrypted_data)
+
+    print(f"File decrypted successfully as {decrypted_file_path}.")
+
+
+def changebackground():
+#    imageUrl = 'https://image-optimizer.cyberriskalliance.com/unsafe/768x0/https://files.scmagazine.com/wp-content/uploads/2023/10/1020_ransomware.jpg'
+    #sysRoot = os.path.expanduser('~')
+    path = 'home/bruno/Desktop/background.jpg'
+
+  #  urllib.request.urlretrieve(imageUrl, path)
+    SPI_SETDESKWALLPAPER = 20
+    ctypes.windll.user32.SystemParametersInfoW(20, 0, path, 0)
+
+def main():
+    choice = input("Do you want to (E)ncrypt or (D)ecrypt a file? ").upper()
+
+    if choice == 'E':
+        file_path = input("Enter the path of the file to encrypt: ")
+        if not os.path.isfile(file_path):
+            print("The file does not exist.")
+            return
+        generate_key()
+        encrypt_file(file_path)
+    elif choice == 'D':
+        encrypted_file_path = input("Enter the path of the file to decrypt: ")
+        if not os.path.isfile(encrypted_file_path):
+            print("The file does not exist.")
+            return
+        decrypt_file(encrypted_file_path)
+    else:
+        print("Invalid choice.")
+
+    changebackground()
+
+
+if __name__ == "__main__":
+    main()
+
