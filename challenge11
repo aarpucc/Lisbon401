@@ -1,0 +1,37 @@
+#This script will have TCP Port Range Scanner that tests whether a TCP port is open or closed
+
+#will import sys library 
+import sys
+
+#will import sr1,IP module from scapy library:
+#module sr1 send packets at layer3 (network) e returns de first answer
+#module IP build blocks to construct and manipulate IP packets
+#module ICMP to allow packets icmp protcol
+from scapy.all import sr1,IP,ICMP,TCP
+
+#obtain an IP and Port, where result ip is a string and port is a intenger
+ip = str(sys.argv[1])
+port = int(sys.argv[2])
+
+
+#Use defined packet with destination IP and destiantion Port(with TPC protocol we have to define a flag (SIN=s)), ICMP protocol
+pacote = IP(dst=ip)/TCP(dport=port, flags='S') 
+
+#Define Var with packet information and when past 2 seconds, to end
+resp = sr1(pacote, timeout=2)
+
+#show command, print packet information of ip and ports
+if resp:
+        print("IP is available")
+        resp.show()
+
+        if resp[TCP].flag == "SA":
+                print(f"Port {port} is open")
+        if resp[TCP].flag == "RA":
+                print(f"Port {port} is closed")
+        else:
+                print(f"Port {port] is filtered ou no response")
+
+else:
+        print("no IP available")
+
