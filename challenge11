@@ -22,8 +22,8 @@ resp = sr1(pacote, timeout=2)
 
 #show command, print packet information of ip and ports
 if resp:
-        print("IP is available")
-        resp.show()
+        #print("IP is available")
+        #resp.show()
 
         if resp[TCP].flag == "SA":
                 print(f"Port {port} is open")
