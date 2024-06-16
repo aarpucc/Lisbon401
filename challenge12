@@ -1,0 +1,25 @@
+#!use/bin/env python3
+
+#Line number 1 is a "shebang" (or "hashbang") used in Python scripts, to define the use of python3 regardless of the location on the system where it is installed.
+
+#Challenge 12 -> Network Security Tool with Scapy
+
+
+#import ipaddress, system library 
+import ipaddress, sys
+
+#import scapy library and classes and functions
+from scapy.all import sr1, IP, ICMP, TCP
+
+#Define variable network with ip
+network = "192.168.1.0/24"
+print(network)
+
+#generates all hosts IPs of the specified network
+iplist = ipaddress.IPv4Network(network).hosts()
+hosts_count = 0
+
+#show each IP address in the generator and prints it.
+for host in iplist:
+        print("ping hosts", str(host), "wait")
+        response = sr1(IP(dst=str(host))/ICMP(),timeout=2,verbose=0)
