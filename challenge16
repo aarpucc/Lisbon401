@@ -1,0 +1,82 @@
+#Challenge 16
+
+import time     #import library time
+
+def iterator():
+        #filepath = "./wordlist.txt"
+        filepath = input("enter filepath -> ")          # input path given by user
+
+        file = open(filepath, encoding="ISO-8859-1")    # encoding translation of this sequence of bytes into characters
+
+        line = file.readline()          # read line from file 
+
+        while line:                     # loop mode while file line, read them
+
+                line = line.rstrip()    # rstrip -> line without spaces
+
+                word = line
+
+                print(word)
+
+                time.sleep(1)           # takes 1 second to read next line, import time lib
+
+                line = file.readline()  # if there is another line loop continues
+
+        file.close()    # close file
+
+
+
+def check_password():
+
+        user_string = input("enter a string -> ")               #input string given by user
+
+        user_string = user_string.rstrip                # rstrip -> line without spaces
+
+        #print(user_string)      
+
+        filepath = input("enter filepath wordlist -> ") #input filepath given by user
+
+        file = open(filepath, encoding="UTF-8") # encoding translation of this sequence of bytes into characters
+
+        line = file.readline()          #read line from file
+
+        while line:
+
+                line = line.rstrip()
+
+                word = line
+                print(word)
+
+                time.sleep(1)
+
+                if word == user_string: 
+                        print(word)
+                        file.close()
+
+                else:
+                        line = file.readline()
+
+
+        print("\npassword not found")
+        file.close()
+
+
+#return
+
+if __name__ == "__main__":
+        while True:
+                mode = input("""
+                Brute Force Wordlist Attack Tool Menu
+                1 - Offensive, Dictionary Iterator
+                2 - Defensive, Password recogized
+                3 - Exit
+                Please enter a number: """)
+
+                if (mode == "1"):
+                        iterator()
+                elif (mode == "2"):
+                        check_password()
+                elif (mode == "3"):
+                        break
+                else:
+                        print("invalid selection")
