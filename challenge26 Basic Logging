@@ -1,0 +1,27 @@
+   
+   import logging #import logging module
+   import os #import os module
+   
+   # Configuração do logger
+   logging.basicConfig(
+       filename='log26.log', #log file name
+       level=os.environ.get("LOGLEVEL", "INFO").upper(),  # set log level, default is INFO
+       format='%(asctime)s - %(levelname)s - %(message)s')  # format log messages,time
+  
+ 
+  log = logging.getLogger(__name__) # create a a logger with current module name
+  
+  # Mensagem de debug
+  log.debug("this is a debug log")
+  
+  # Mensagem de informação
+  log.info("this is an information log")
+  
+  # Mensagem de aviso
+  log.warning("this is a warning log")
+  
+  # Mensagem de erro
+  log.error("this is an error log")
+  
+  # Mensagem crítica
+  log.critical("this is a critical log")
