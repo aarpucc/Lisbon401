@@ -1,0 +1,65 @@
+#sudo apt-get install zip unzip -y
+
+#nano passwords.txt created file to zip
+
+#zip --encrypt passwords.txt.zip passwords.txt
+#password benfica
+#unzip passwords.txt.zip
+
+import zipfile
+
+def brute_force_zip(zip_file_path, password_list_path):
+    """
+    Tries to unzip a password-protected zip file using a list of passwords.
+
+    Parameters:
+    zip_file_path (str): Path to the password-protected zip file.
+    password_list_path (str): Path to the file containing the list of passwords (RockYou.txt).
+    """
+    # Open the zip file
+    zip_file = zipfile.ZipFile(zip_file_path)
+    
+    # Open the password list file
+    with open(password_list_path, 'r', encoding='latin-1') as password_list:
+        # Iterate over each password in the list
+        for password in password_list:
+            # Remove any leading/trailing whitespace characters from the password
+            password = password.strip()
+            try:
+                # Try to extract all contents of the zip file using the current password
+                zip_file.extractall(pwd=password.encode('utf-8'))
+                # If successful, print the found password and return it
+                print(f'Password found: {password}')
+                return password
+            except (RuntimeError, zipfile.BadZipFile):
+                # If an exception occurs (incorrect password or other issue), continue to the next password
+                continue
+    
+    # If no password is found, print a failure message
+    print('No password found.')
+    return None
+
+def main():
+    # Define the path to the password-protected zip file
+    #zip_file_path = 'passwords.txt.zip'
+    zip_file_path = input("enter zip file path:")
+    
+    # Define the path to the password list file (RockYou.txt)
+    #password_list_path = 'rockyou.txt'
+    password_list_path = input("enter path flie list password:")
+
+    # Call the brute_force_zip function with the specified paths
+    found_password = brute_force_zip(zip_file_path, password_list_path)
+    
+    # Check if a password was found
+    if found_password:
+        # If found, print the success message with the found password
+        print(f'Success! The password is: {found_password}')
+    else:
+        # If not found, print the failure message
+        print('Failed: Could not find the password.')
+
+# Check if the script is being run directly (not imported as a module)
+if __name__ == "__main__":
+    # If run directly, call the main function
+    main()
